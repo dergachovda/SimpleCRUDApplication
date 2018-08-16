@@ -1,15 +1,14 @@
 package com.project.test.test.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.util.Date;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "users", schema="public")
@@ -27,11 +26,20 @@ public class User extends AuditModel {
     private String lastName;
 
     @Column
-    private Date birthDay;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private Calendar birthDay;
 
-    @JoinColumn(name = "genderId")
-    @ManyToOne
-    private Gender gender;
+    @Column
+    private String gender;
+
+    public User() {
+    }
+    public User(String firstName, String lastName, Calendar birthDay, String gender) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+        this.gender = gender;
+    }
 
     public long getUserId() {
         return userId;
@@ -57,19 +65,19 @@ public class User extends AuditModel {
         this.lastName = lastName;
     }
 
-    public Date getBirthDay() {
+    public Calendar getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(Date birthDay) {
+    public void setBirthDay(Calendar birthDay) {
         this.birthDay = birthDay;
     }
 
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
