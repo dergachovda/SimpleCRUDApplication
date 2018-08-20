@@ -1,12 +1,41 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
 <head>
-	<meta charset="utf-8" />
-	<title>Spring Boot App</title>
+  <meta charset="UTF-8">
+  <title>Test CRUD App</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=cyrillic" rel="stylesheet">
 </head>
 
 <body>
-	<h1>Users Table</h1>
+
+  <header class="header">
+    <div class="button-wrap">
+      <div class="add-user button">Add new user</div>
+      <div class="info">Info:</div>
+      <!-- <div class="search">
+        <input id="spterm" type="text" name="spterm" placeholder="Serch user"><span class="button">Serch</span>
+      </div>
+      <div class="close button">Quit</div> -->
+    </div> 
+    <div class="header-table">
+      <div class="id">Id</div>
+      <div class="firstName">First Name</div>
+      <div class="lastName">Last Name</div>
+      <div class="birthDay">Birth Day</div>
+      <div class="gender">Gender</div>
+    </div>
+  </header>
+
+  <div class="wrap-page">
+    <div class="table">
+    </div>
+  </div>
+
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../static/script.js"></script>
 </body>
+
 </html>
