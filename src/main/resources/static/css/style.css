@@ -222,15 +222,15 @@ header {
 
 .item-user input.firstName-user,
 .item-user input.lastName-user {
-	width: 190px;
+	width: 188px;
 }
 
 .item-user input.birthDay-user {
-	width: 90px;
+	width: 85px;
 }
 
 .item-user input.gender-user {
-	width: 90px;
+	width: 85px;
 }
 
 .item-user-wrap .edit,
@@ -249,12 +249,12 @@ header {
 }
 
 .item-user-wrap .edit {
-	background: url(img/edit.png);
+	background: url(../img/edit.png);
 }
 
 .item-user-wrap .save {
 	display: none;
-	background: url(img/save.png);
+	background: url(../img/save.png);
 }
 
 .save.active {
@@ -262,19 +262,19 @@ header {
 }
 
 .item-user-wrap .delete {
-	background: url(img/delete.png);
+	background: url(../img/delete.png);
 }
 
 .item-user-wrap .edit:hover {
-	background: url(img/edit-hover.png);
+	background: url(../img/edit-hover.png);
 }
 
 .item-user-wrap .save:hover {
-	background: url(img/save-hover.png);
+	background: url(../img/save-hover.png);
 }
 
 .item-user-wrap .delete:hover {
-	background: url(img/delete-hover.png);
+	background: url(../img/delete-hover.png);
 }
 
 .loader {

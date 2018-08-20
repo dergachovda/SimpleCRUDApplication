@@ -2,21 +2,14 @@ package com.project.test.test.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 
 @Entity
 @Table(name = "users", schema="public")
-public class User extends AuditModel {
+public class User implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private long userId;
 
     @Column
@@ -41,6 +34,10 @@ public class User extends AuditModel {
         this.gender = gender;
     }
 
+    @Id
+    @SequenceGenerator(name="pk_sequence",sequenceName="entity_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="pk_sequence")
+    @Column(name="id", unique=true, nullable=false)
     public long getUserId() {
         return userId;
     }
