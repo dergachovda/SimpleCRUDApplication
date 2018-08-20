@@ -10,9 +10,4 @@ public class MainController {
     String home() {
         return "index";
     }
-
-    @RequestMapping("/welcome")
-    public String firstPage(ModelMap map) {
-        return "welcome";
-    }
 }
