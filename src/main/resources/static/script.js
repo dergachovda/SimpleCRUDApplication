@@ -1,13 +1,15 @@
-$(document).ready(function() {
+const debug = true;
+let url = debug ? 'http://localhost:8086' : '';
 
+$(document).ready(function() {
   $.ajax({
           xhrFields: {
-            withCredentials: true
+           // withCredentials: true
           },
           beforeSend: function() {
             $('body').append('<div class="loader"><img src="img/loading.gif"></div>');
           },
-          url: "/users",
+          url: `${url}/users`,
           dataType: 'json',
           type: 'GET',
           success: function(data) {
@@ -17,8 +19,8 @@ $(document).ready(function() {
               $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="'+item.firstName+'" class="firstName-user" readonly> <input type="text" value="'+item.lastName+'" class="lastName-user" readonly> <input type="text" value="'+item.birthDay+'" class="birthDay-user" readonly> <input type="text" value="'+item.gender+'" class="gender-user" readonly> </div> <span class="edit">edit</span><span class="save">save</span><span class="delete">del</span></div>');
             });
           },
-          error:function() { 
-             alert('Error');
+          error:function(xhr, ajaxOptions, thrownError) { 
+             alert( ajaxOptions);
           },
           complete: function(){
             $('.loader').remove();
@@ -78,7 +80,6 @@ $(document).ready(function() {
             }
 
             else {
-
                 //edit user
                 $.ajax({
                   xhrFields: {
