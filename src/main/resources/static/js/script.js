@@ -89,7 +89,7 @@ $(document).ready(function () {
                 crossDomain: true,
                 // contentType: "text/plain",
                 contentType: "application/json",
-                dataType: 'json',
+                // dataType: 'json',
                 url: url + "/users/" + id,
                 type: 'PUT',
                 data: JSON.stringify(dataObject),
@@ -121,7 +121,6 @@ $(document).ready(function () {
                 $.ajax({
                     url: url + '/users/' + id,
                     contentType: "application/json",
-                    dataType: 'json',
                     type: 'DELETE',
                     success: function(textStatus, status) {
                         console.log(textStatus);
