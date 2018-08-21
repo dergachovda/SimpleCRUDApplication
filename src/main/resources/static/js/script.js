@@ -1,12 +1,11 @@
-$(document).ready(function () {
-    var url = "http://localhost:8086";
-    load();
-    function load() {
-        $.ajax({
+const debug = true;
+let url = debug ? 'http://localhost:8086' : '';
+$(document).ready(function() {
+    $.ajax({
             beforeSend: function () {
                 $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
             },
-            url: url + "/users",
+            url: `${url}/users`,
             dataType: 'json',
             type: 'GET',
             success: function (data) {
@@ -16,27 +15,23 @@ $(document).ready(function () {
                     $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
                 });
             },
-            error: function(textStatus) {
-                console.log( "Request failed: " + textStatus );
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(`Request failed: ${thrownError}` );
             },
             complete: function () {
                 $('.loader').remove();
             }
         });
-    }
 
     // edit user
     $(".table").on('click', 'span.edit', function () {
-
         $(this).siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
         $(this).siblings(".save").addClass('active');
         $(this).hide();
-
     });
 
     // save or add new user
     $(".table").on('click', 'span.save', function (textStatus, xhr = null, error = null) {
-
         var activeSpan = $(this);
         var id = $(this).siblings(".item-user").children("input.id-user").val();
         var firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
@@ -58,12 +53,11 @@ $(document).ready(function () {
         ) {
             alert("Input data in all fields!");
         }
-
+        var dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
         if ($(this).hasClass('add-user')) {
             //add new user
-            var dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
             $.ajax({
-                url: url + "/users",
+                url: `${url}/users`,
                 contentType: "application/json",
                 dataType: 'json',
                 type: 'POST',
@@ -86,11 +80,9 @@ $(document).ready(function () {
         } else {
             //edit user
             $.ajax({
-                crossDomain: true,
-                // contentType: "text/plain",
                 contentType: "application/json",
                 // dataType: 'json',
-                url: url + "/users/" + id,
+                url: `${url}/users/${id}`,
                 type: 'PUT',
                 data: JSON.stringify(dataObject),
                 success: function(textStatus, status) {
@@ -112,14 +104,13 @@ $(document).ready(function () {
     });
 
     //delete user 
-    $(".table").on('click', 'span.delete', function () {
-
+    $(".table").on('click', 'span.delete', function() {
         var activeSpan = $(this);
         var id = $(this).siblings(".item-user").children("input.id-user").val();
         if (!$(this).hasClass('new-user')) {
             if (confirm("Delete the user?")) {
                 $.ajax({
-                    url: url + '/users/' + id,
+                    url: `${url}/users/${id}`,
                     contentType: "application/json",
                     type: 'DELETE',
                     success: function(textStatus, status) {
