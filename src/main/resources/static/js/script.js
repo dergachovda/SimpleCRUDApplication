@@ -1,28 +1,31 @@
 $(document).ready(function () {
     var url = "http://localhost:8086";
-    $.ajax({
-        beforeSend: function () {
-            $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
-        },
-        url: url + "/users",
-        dataType: 'json',
-        type: 'GET',
-        success: function (data) {
-            $("header").show();
-            $(".info").append('Total users: ' + data.totalElements + ', Current page: ' + (data.number + 1) + ', Total Pages: ' + data.totalPages);
-            data.content.forEach(function (item) {
-                $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit">edit</span><span class="save">save</span><span class="delete">del</span></div>');
-            });
-        },
-        error: function () {
-            alert('Error');
-        },
-        complete: function () {
-            $('.loader').remove();
-        }
-    });
+    load();
+    function load() {
+        $.ajax({
+            beforeSend: function () {
+                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
+            },
+            url: url + "/users",
+            dataType: 'json',
+            type: 'GET',
+            success: function (data) {
+                $("header").show();
+                $(".info").append('Total users: ' + data.totalElements + ', Current page: ' + (data.number + 1) + ', Total Pages: ' + data.totalPages);
+                data.content.forEach(function (item) {
+                    $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit">edit</span><span class="save">save</span><span class="delete">del</span></div>');
+                });
+            },
+            error: function(textStatus) {
+                console.log( "Request failed: " + textStatus );
+            },
+            complete: function () {
+                $('.loader').remove();
+            }
+        });
+    }
 
-    // редактирование строки города
+    // edit user
     $(".table").on('click', 'span.edit', function () {
 
         $(this).siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
@@ -31,63 +34,74 @@ $(document).ready(function () {
 
     });
 
-    // сохранение редактирования или добавление нового города в базе
+    // save or add new user
     $(".table").on('click', 'span.save', function () {
 
         var activeSpan = $(this);
         var id = $(this).siblings(".item-user").children("input.id-user").val();
-        var firstName = $(this).siblings(".item-user").children("input.ferstName-user").val();
+        var firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
         var lastName = $(this).siblings(".item-user").children("input.lastName-user").val();
         var birthDay = $(this).siblings(".item-user").children("input.birthDay-user").val();
         var gender = $(this).siblings(".item-user").children("input.gender-user").val();
-
+        var user = {
+            "userId" : id,
+            "firstName": firstName,
+            "lastName": lastName,
+            "birthDay": birthDay,
+            "gender": gender
+        };
         if (
             (firstName == "")
             || (lastName == "")
             || (birthDay == "")
             || (gender == "")
         ) {
-            alert("Imput data in all fields!");
+            alert("Input data in all fields!");
         }
 
         if ($(this).hasClass('add-user')) {
             //add new user
             $.ajax({
-                xhrFields: {
-                    withCredentials: true
-                },
+                url: url + "/users",
                 contentType: "application/json",
                 dataType: 'json',
                 type: 'POST',
                 data: {
-                    "firstName": firstName,
-                    "lastName": lastName,
-                    "birthDay": birthDay,
-                    "gender": gender
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "birthDay": user.birthDay,
+                    "gender": user.gender
                 },
-                success: function (data) {
-                    alert(data);
+                success: function (msg) {
+                    console.log(msg);
+                    location.reload();
+                },
+                error: function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus );
                 }
             });
-
-
-        }
-
-        else {
+        } else {
             //edit user
+            console.log(`Edit user`);
+            console.log(`{ firstName : ${user.firstName}, lastName : ${user.lastName}, birthDay : ${user.birthDay}, gender : ${user.gender}}.`);
             $.ajax({
                 url: url + "/users/" + id,
                 contentType: "application/json",
                 dataType: 'json',
                 type: 'PUT',
                 data: {
-                    "firstName": firstName,
-                    "lastName": lastName,
-                    "birthDay": birthDay,
-                    "gender": gender
+                    // "userId" : user.userId,
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "birthDay": user.birthDay,
+                    "gender": user.gender
                 },
-                success: function (data) {
-                    alert(data);
+                success: function (msg) {
+                    console.log(msg);
+                    location.reload();
+                },
+                error: function(jqXHR, textStatus) {
+                    console.log( "Request failed: " + textStatus );
                 }
             });
         }
@@ -98,44 +112,35 @@ $(document).ready(function () {
 
         var activeSpan = $(this);
         var id = $(this).siblings(".item-user").children("input.id-user").val();
-
         if (!$(this).hasClass('new-user')) {
-
             if (confirm("Delete the user?")) {
-
                 $.ajax({
-                    xhrFields: {
-                        withCredentials: true
-                    },
                     url: url + '/users/' + id,
+                    contentType: "application/json",
                     dataType: 'json',
                     type: 'DELETE',
-                    success: function (data) {
-                        alert(data);
+                    success: function (msg) {
+                        console.log(msg);
+                        location.reload();
+                    },
+                    error: function(jqXHR, textStatus) {
+                        console.log( "Request failed: " + textStatus );
                     }
                 });
-
             }
-
-        }
-
-        else {
-
+        } else {
             //delete empty line
             activeSpan.parent().remove();
-
         }
-
-
     });
 
-    //промотка страницы вниз
+    //scroll down
     function scroll_to_bottom(speed) {
         var height = $("body").height();
         $("html,body").animate({"scrollTop": height}, speed);
     }
 
-    // добавление нового города в таблице на странице
+    // add new user
     $(".add-user").on('click', function () {
 
         scroll_to_bottom(500);
@@ -147,7 +152,7 @@ $(document).ready(function () {
 
     });
 
-    // функция поиска города в таблице
+    // search a user
     function search() {
 
         var object = $('.item-user');
@@ -171,27 +176,26 @@ $(document).ready(function () {
         });
 
         if (countUser == 0) {
-            alert("Город с таким названием или id не найден!");
+            alert("User not found");
         }
 
     }
 
-    // поиск города в таблице при клике на кнопку поиска
+    // search a user by button
     $(".search .button").on('click', function () {
         search();
     });
 
-    // поиск города в таблице при нажатии энтера в поле ввода
+    // search a user by enter
     $('input#spterm').keydown(function (e) {
         if (e.keyCode === 13) {
             search();
         }
     });
 
-    // редактирование строки города
+    // edit user line
     $(".close").on('click', function () {
         location.reload();
     });
-
 
 });

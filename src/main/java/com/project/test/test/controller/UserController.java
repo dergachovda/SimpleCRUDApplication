@@ -3,9 +3,13 @@ package com.project.test.test.controller;
 import com.project.test.test.exception.ResourceNotFoundException;
 import com.project.test.test.model.User;
 import com.project.test.test.repository.UserRepository;
+import org.hibernate.annotations.Loader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-
+    Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -35,7 +39,8 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     public User updateUser(@PathVariable Long id,
-                           /*@Valid */@RequestBody User userRequest) {
+                           @Valid @RequestBody User userRequest) {
+        logger.debug("PUT id=" + id + " : " + userRequest.toString());
         return userRepository.findById(id)
                 .map(user -> {
                     user.setFirstName(userRequest.getFirstName());
@@ -51,7 +56,7 @@ public class UserController {
         return userRepository.findById(id)
                 .map(user -> {
                     userRepository.delete(user);
-                    return ResponseEntity.ok().build();
+                    return new ResponseEntity<>("{\"msg\": \"Successful\"}", HttpStatus.OK);
                 }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 
