@@ -13,7 +13,7 @@ $(document).ready(function () {
                 $("header").show();
                 $(".info").append('Total users: ' + data.totalElements + ', Current page: ' + (data.number + 1) + ', Total Pages: ' + data.totalPages);
                 data.content.forEach(function (item) {
-                    $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit">edit</span><span class="save">save</span><span class="delete">del</span></div>');
+                    $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
                 });
             },
             error: function(textStatus) {
@@ -35,7 +35,7 @@ $(document).ready(function () {
     });
 
     // save or add new user
-    $(".table").on('click', 'span.save', function () {
+    $(".table").on('click', 'span.save', function (textStatus, xhr = null, error = null) {
 
         var activeSpan = $(this);
         var id = $(this).siblings(".item-user").children("input.id-user").val();
@@ -61,48 +61,52 @@ $(document).ready(function () {
 
         if ($(this).hasClass('add-user')) {
             //add new user
+            var dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
             $.ajax({
                 url: url + "/users",
                 contentType: "application/json",
                 dataType: 'json',
                 type: 'POST',
-                data: {
-                    "firstName": user.firstName,
-                    "lastName": user.lastName,
-                    "birthDay": user.birthDay,
-                    "gender": user.gender
+                data: JSON.stringify(dataObject),
+                success: function(data) {
+                    activeSpan.siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").removeClass('active');
+                    activeSpan.siblings(".edit").show();
+                    activeSpan.removeClass('active add-user');
+                    activeSpan.siblings("span.delete").removeClass('new-user');
+                    activeSpan.parent().removeClass('new-user');
+                    activeSpan.siblings(".item-user").children("input.id-user").val(data.userId);
                 },
-                success: function (msg) {
-                    console.log(msg);
-                    location.reload();
-                },
-                error: function(jqXHR, textStatus) {
-                    console.log( "Request failed: " + textStatus );
+                error: function(xhr, textStatus, error) {
+                    console.log(xhr.responseText);
+                    console.log(xhr.statusText);
+                    console.log(textStatus);
+                    console.log(error);
                 }
             });
         } else {
             //edit user
-            console.log(`Edit user`);
-            console.log(`{ firstName : ${user.firstName}, lastName : ${user.lastName}, birthDay : ${user.birthDay}, gender : ${user.gender}}.`);
             $.ajax({
-                url: url + "/users/" + id,
+                crossDomain: true,
+                // contentType: "text/plain",
                 contentType: "application/json",
                 dataType: 'json',
+                url: url + "/users/" + id,
                 type: 'PUT',
-                data: {
-                    // "userId" : user.userId,
-                    "firstName": user.firstName,
-                    "lastName": user.lastName,
-                    "birthDay": user.birthDay,
-                    "gender": user.gender
+                data: JSON.stringify(dataObject),
+                success: function(textStatus, status) {
+                    activeSpan.siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").removeClass('active');
+                    activeSpan.siblings(".edit").show();
+                    activeSpan.removeClass('active');
+                    console.log(textStatus);
+                    console.log(status);
                 },
-                success: function (msg) {
-                    console.log(msg);
-                    location.reload();
+                error: function(xhr, textStatus, error) {
+                    console.log(xhr.responseText);
+                    console.log(xhr.statusText);
+                    console.log(textStatus);
+                    console.log(error);
                 },
-                error: function(jqXHR, textStatus) {
-                    console.log( "Request failed: " + textStatus );
-                }
+                complete: location.reload()
             });
         }
     });
@@ -119,12 +123,16 @@ $(document).ready(function () {
                     contentType: "application/json",
                     dataType: 'json',
                     type: 'DELETE',
-                    success: function (msg) {
-                        console.log(msg);
+                    success: function(textStatus, status) {
+                        console.log(textStatus);
+                        console.log(status);
                         location.reload();
                     },
-                    error: function(jqXHR, textStatus) {
-                        console.log( "Request failed: " + textStatus );
+                    error: function(xhr, textStatus, error) {
+                        console.log(xhr.responseText);
+                        console.log(xhr.statusText);
+                        console.log(textStatus);
+                        console.log(error);
                     }
                 });
             }
