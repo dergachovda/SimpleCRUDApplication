@@ -29,6 +29,7 @@ $(document).ready(function() {
                 data.content.forEach(function (item) {
                     $(".table-data").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
                 });
+                refreshPageLinks(data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log(`Request failed: ${thrownError}` );
@@ -38,6 +39,19 @@ $(document).ready(function() {
             }
         });
     }
+
+    function refreshPageLinks(data) {
+        $('.page-links').remove();
+        $('.page-links-panel').append(`<div class="page-links"></div>`);
+        for (var i = 1; i <= data.totalPages; i++) {
+            $('.page-links').append(`<span class="page-link">${i}</span>`);
+        }
+    }
+
+    $('.page-links-panel').on('click', 'span.page-link', function() {
+        console.log("val:" + ($(this).text() - 1));
+        load( ($(this).text() - 1) );
+    });
 
     function refreshInfo(data) {
         currentPage = data.number;
