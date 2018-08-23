@@ -44,12 +44,16 @@ $(document).ready(function() {
         $('.page-links').remove();
         $('.page-links-panel').append(`<div class="page-links"></div>`);
         for (var i = 1; i <= data.totalPages; i++) {
-            $('.page-links').append(`<span class="page-link">${i}</span>`);
+            if ((i-1) == data.number) {
+                $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
+            } else {
+                $('.page-links').append(`<span class="page-link">${i}</span>`);
+            }
         }
     }
 
     $('.page-links-panel').on('click', 'span.page-link', function() {
-        console.log("val:" + ($(this).text() - 1));
+        console.log("load page:" + ($(this).text() - 1));
         load( ($(this).text() - 1) );
     });
 
