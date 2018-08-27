@@ -1,4 +1,4 @@
-package com.project.test.test;
+package com.project.my;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

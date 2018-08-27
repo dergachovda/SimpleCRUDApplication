@@ -1,10 +1,10 @@
-package com.project.test.test.model;
+package com.project.my.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users", schema="public")
@@ -19,15 +19,15 @@ public class User implements Serializable {
     private String lastName;
 
     @Column
-    @JsonFormat(pattern = "YYYY-MM-dd")
-    private Calendar birthDay;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDay;
 
     @Column
     private String gender;
 
     public User() {
     }
-    public User(String firstName, String lastName, Calendar birthDay, String gender) {
+    public User(String firstName, String lastName, LocalDate birthDay, String gender) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDay = birthDay;
@@ -62,11 +62,11 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public Calendar getBirthDay() {
+    public LocalDate getBirthDay() {
         return birthDay;
     }
 
-    public void setBirthDay(Calendar birthDay) {
+    public void setBirthDay(LocalDate birthDay) {
         this.birthDay = birthDay;
     }
 

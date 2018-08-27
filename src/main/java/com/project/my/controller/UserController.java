@@ -1,10 +1,8 @@
-package com.project.test.test.controller;
+package com.project.my.controller;
 
-import com.project.test.test.exception.ResourceNotFoundException;
-import com.project.test.test.model.User;
-import com.project.test.test.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.project.my.exception.ResourceNotFoundException;
+import com.project.my.repository.UserRepository;
+import com.project.my.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -36,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public User updateUser(@PathVariable Long id,
+    public ResponseEntity<?> updateUser(@PathVariable Long id,
                            @Valid @RequestBody User userRequest) {
         return userRepository.findById(id)
                 .map(user -> {
@@ -44,7 +42,8 @@ public class UserController {
                     user.setLastName(userRequest.getLastName());
                     user.setGender(userRequest.getGender());
                     user.setBirthDay(userRequest.getBirthDay());
-                    return userRepository.save(user);
+                    userRepository.save(user);
+                    return ResponseEntity.noContent().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 

@@ -10,12 +10,12 @@ $(document).ready(function() {
 
     function load(page) {
         let getUsersUrl = `${url}/users?page=${page}`;
-        if (sizePage != -1) {
+        if (sizePage !== -1) {
             getUsersUrl = `${getUsersUrl}&size=${sizePage}`;
         }
         $.ajax({
             beforeSend: function () {
-                $('body').append('<div class="loader"><img src="../static/img/loading.gif"></div>');
+                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
             },
             url: getUsersUrl,
             dataType: 'json',
@@ -45,9 +45,9 @@ $(document).ready(function() {
         $('.page-links-panel').append(`<div class="page-links"></div>`);
         for (let i = 1; i <= data.totalPages; i++) {
             if ((i-1) == data.number) {
-                $('.page-links').append(`<span class="page-link">[<a href="#">${i}</a>]</B></span>`);
+                $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
             } else {
-                $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                $('.page-links').append(`<span class="page-link">${i}</span>`);
             }
         }
     }
@@ -107,13 +107,13 @@ $(document).ready(function() {
 
     // save or add new user
     $(".table").on('click', 'span.save', function (textStatus, xhr = null, error = null) {
-        var activeSpan = $(this);
-        var id = $(this).siblings(".item-user").children("input.id-user").val();
-        var firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
-        var lastName = $(this).siblings(".item-user").children("input.lastName-user").val();
-        var birthDay = $(this).siblings(".item-user").children("input.birthDay-user").val();
-        var gender = $(this).siblings(".item-user").children("input.gender-user").val();
-        var user = {
+        let activeSpan = $(this);
+        let id = $(this).siblings(".item-user").children("input.id-user").val();
+        let firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
+        let lastName = $(this).siblings(".item-user").children("input.lastName-user").val();
+        let birthDay = $(this).siblings(".item-user").children("input.birthDay-user").val();
+        let gender = $(this).siblings(".item-user").children("input.gender-user").val();
+        let user = {
             "userId" : id,
             "firstName": firstName,
             "lastName": lastName,
@@ -128,7 +128,7 @@ $(document).ready(function() {
         ) {
             alert("Input data in all fields!");
         }
-        var dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
+        let dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
         if ($(this).hasClass('add-user')) {
             //add new user
             $.ajax({
@@ -173,15 +173,15 @@ $(document).ready(function() {
                     console.log(textStatus);
                     console.log(error);
                 },
-                complete: location.reload()
+                complete: load(currentPage)
             });
         }
     });
 
     //delete user 
     $(".table").on('click', 'span.delete', function() {
-        var activeSpan = $(this);
-        var id = $(this).siblings(".item-user").children("input.id-user").val();
+        let activeSpan = $(this);
+        let id = $(this).siblings(".item-user").children("input.id-user").val();
         if (!$(this).hasClass('new-user')) {
             if (confirm("Delete the user?")) {
                 $.ajax({
@@ -209,65 +209,19 @@ $(document).ready(function() {
 
     //scroll down
     function scroll_to_bottom(speed) {
-        var height = $("body").height();
+        let height = $("body").height();
         $("html,body").animate({"scrollTop": height}, speed);
     }
 
     // add new user
     $(".add-user").on('click', function () {
         scroll_to_bottom(500);
-        var newUser = $('<div class="item-user-wrap new-user"> <div class="item-user"> <input type="text" value="" class="id-user" readonly> <input type="text" value="" class="firstName-user" readonly> <input type="text" value="" class="lastName-user" readonly> <input type="text" value="" class="birthDay-user" readonly> <input type="text" value="" class="gender-user" readonly> </div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
+        let newUser = $('<div class="item-user-wrap new-user"> <div class="item-user"> <input type="text" value="" class="id-user" readonly> <input type="text" value="" class="firstName-user" readonly> <input type="text" value="" class="lastName-user" readonly> <input type="text" value="" class="birthDay-user" readonly> <input type="text" value="" class="gender-user" readonly> </div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
         $(".table-data").append(newUser);
         $(".item-user-wrap.new-user .item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
         $(".item-user-wrap.new-user .save").addClass('active');
         $(".item-user-wrap.new-user .edit").hide();
 
-    });
-
-    // search a user
-    function search() {
-
-        var object = $('.item-user');
-        var search = $('#spterm').val().toLowerCase();
-        var marginTop = $('.header').height();
-        var countUser = 0;
-
-        $.each(object, function () {
-
-            var idUser = $(this).children('input.id-user').val().toLowerCase();
-            var idFirstName = $(this).children('input.firstName-user').val().toLowerCase();
-
-            if ((idCity == search) || (idFirstName == search)) {
-
-                var height = $(this).children('input.id-user').offset().top - marginTop - 5;
-                $("html,body").animate({"scrollTop": height}, 800);
-                countUser += 1;
-            }
-
-            return countUser;
-        });
-
-        if (countUser == 0) {
-            alert("User not found");
-        }
-
-    }
-
-    // search a user by button
-    $(".search .button").on('click', function () {
-        search();
-    });
-
-    // search a user by enter
-    $('input#spterm').keydown(function (e) {
-        if (e.keyCode === 13) {
-            search();
-        }
-    });
-
-
-    $(".close").on('click', function () {
-        location.reload();
     });
 
 });
