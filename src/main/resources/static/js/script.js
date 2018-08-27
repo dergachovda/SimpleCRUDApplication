@@ -163,12 +163,14 @@ $(document).ready(function() {
                     activeSpan.parent().removeClass('new-user');
                     activeSpan.siblings(".item-user").children("input.id-user").val(data.userId);
                     activeSpan.siblings(".item-user").find("#genderSelect").attr('disabled', 'true');
+                    load(currentPage);
                 },
                 error: function(xhr, textStatus, error) {
                     console.log(xhr.responseText);
                     console.log(xhr.statusText);
                     console.log(textStatus);
                     console.log(error);
+                    load(currentPage);
                 }
             });
         } else {
@@ -183,16 +185,16 @@ $(document).ready(function() {
                     activeSpan.siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").removeClass('active');
                     activeSpan.siblings(".edit").show();
                     activeSpan.removeClass('active');
-                    console.log(textStatus);
-                    console.log(status);
+                    console.log(`Edit is ${status}`);
+                    load(currentPage);
                 },
                 error: function(xhr, textStatus, error) {
                     console.log(xhr.responseText);
                     console.log(xhr.statusText);
                     console.log(textStatus);
                     console.log(error);
-                },
-                complete: load(currentPage)
+                    load(currentPage);
+                }
             });
         }
     });

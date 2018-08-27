@@ -43,7 +43,7 @@ public class UserController {
                     user.setGender(userRequest.getGender());
                     user.setBirthDay(userRequest.getBirthDay());
                     userRepository.save(user);
-                    return ResponseEntity.noContent().build();
+                    return ResponseEntity.accepted().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 
@@ -52,7 +52,7 @@ public class UserController {
         return userRepository.findById(id)
                 .map(user -> {
                     userRepository.delete(user);
-                    return ResponseEntity.ok("");
+                    return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
     }
 
