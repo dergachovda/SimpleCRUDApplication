@@ -240,7 +240,6 @@ $(document).ready(function() {
         '<input type="text" value="" class="firstName-user" readonly>'+
         '<input type="text" value="" class="lastName-user" readonly>'+
         '<input type="text" value="" class="birthDay-user" readonly>'+
-        //'<input type="text" value="" class="gender-user">'+
         getGenderSelect() +
         '</div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
         $(".table-data").append(newUser);
