@@ -15,7 +15,7 @@ $(document).ready(function() {
         }
         $.ajax({
             beforeSend: function () {
-                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
+                $('body').append('<div class="loader"><img src="../static/img/loading.gif"></div>');
             },
             url: getUsersUrl,
             dataType: 'json',
@@ -27,7 +27,7 @@ $(document).ready(function() {
                 refreshInfo(data);
                 $(".table").append(`<div class="table-data"></div>`);
                 data.content.forEach(function (item) {
-                    $(".table-data").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
+                    renderItem(item);
                 });
                 refreshPageLinks(data);
             },
@@ -40,14 +40,31 @@ $(document).ready(function() {
         });
     }
 
-    function refreshPageLinks(data) {
+    const renderItem = (item) => 
+        $(".table-data").append('<div class="item-user-wrap"> <div class="item-user"> '+
+        '<input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' +
+        item.firstName + 
+        '" class="firstName-user" readonly> <input type="text" value="' +
+        item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay +
+        '" class="birthDay-user" readonly> ' +getGenderSelect(true, item.userId, item.gender) +
+        ' </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
+    
+
+    const getGenderSelect = (disabled, id, value) => 
+        `<select ${disabled ? "disabled" : ""} id="genderSelect"> `+
+        `<option value='' ${!id & "selected"}></option>`+
+        `<option value='Female' ${value==='Female' ? "selected" : ""}>Female</option>`+
+        `<option value='Male'  ${value==='Male' ? "selected" : ""}>Male</option></select>`;
+    
+
+    const refreshPageLinks = (data) => {
         $('.page-links').remove();
         $('.page-links-panel').append(`<div class="page-links"></div>`);
         for (let i = 1; i <= data.totalPages; i++) {
             if ((i-1) == data.number) {
                 $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
             } else {
-                $('.page-links').append(`<span class="page-link">${i}</span>`);
+                $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
             }
         }
     }
@@ -102,18 +119,19 @@ $(document).ready(function() {
     $(".table").on('click', 'span.edit', function () {
         $(this).siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
         $(this).siblings(".save").addClass('active');
+        $(this).siblings(".item-user").find("#genderSelect").removeAttr("disabled");
         $(this).hide();
     });
 
     // save or add new user
     $(".table").on('click', 'span.save', function (textStatus, xhr = null, error = null) {
-        let activeSpan = $(this);
-        let id = $(this).siblings(".item-user").children("input.id-user").val();
-        let firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
-        let lastName = $(this).siblings(".item-user").children("input.lastName-user").val();
-        let birthDay = $(this).siblings(".item-user").children("input.birthDay-user").val();
-        let gender = $(this).siblings(".item-user").children("input.gender-user").val();
-        let user = {
+        const activeSpan = $(this);
+        const id = $(this).siblings(".item-user").children("input.id-user").val();
+        const firstName = $(this).siblings(".item-user").children("input.firstName-user").val();
+        const lastName = $(this).siblings(".item-user").children("input.lastName-user").val();
+        const birthDay = $(this).siblings(".item-user").children("input.birthDay-user").val();
+        const gender = $(this).siblings(".item-user").find("#genderSelect option:selected").val();
+        const user = {
             "userId" : id,
             "firstName": firstName,
             "lastName": lastName,
@@ -126,7 +144,7 @@ $(document).ready(function() {
             || (birthDay == "")
             || (gender == "")
         ) {
-            alert("Input data in all fields!");
+            alert("Please, fill all fields!");
         }
         let dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
         if ($(this).hasClass('add-user')) {
@@ -144,6 +162,7 @@ $(document).ready(function() {
                     activeSpan.siblings("span.delete").removeClass('new-user');
                     activeSpan.parent().removeClass('new-user');
                     activeSpan.siblings(".item-user").children("input.id-user").val(data.userId);
+                    activeSpan.siblings(".item-user").find("#genderSelect").attr('disabled', 'true');
                 },
                 error: function(xhr, textStatus, error) {
                     console.log(xhr.responseText);
@@ -216,7 +235,14 @@ $(document).ready(function() {
     // add new user
     $(".add-user").on('click', function () {
         scroll_to_bottom(500);
-        let newUser = $('<div class="item-user-wrap new-user"> <div class="item-user"> <input type="text" value="" class="id-user" readonly> <input type="text" value="" class="firstName-user" readonly> <input type="text" value="" class="lastName-user" readonly> <input type="text" value="" class="birthDay-user" readonly> <input type="text" value="" class="gender-user" readonly> </div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
+
+        const newUser = $('<div class="item-user-wrap new-user"> <div class="item-user">'+
+        '<input type="text" value="" class="id-user" readonly>'+
+        '<input type="text" value="" class="firstName-user" readonly>'+
+        '<input type="text" value="" class="lastName-user" readonly>'+
+        '<input type="text" value="" class="birthDay-user" readonly>'+
+        getGenderSelect() +
+        '</div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
         $(".table-data").append(newUser);
         $(".item-user-wrap.new-user .item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
         $(".item-user-wrap.new-user .save").addClass('active');
