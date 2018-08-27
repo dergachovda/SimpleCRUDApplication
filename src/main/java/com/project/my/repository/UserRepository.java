@@ -1,6 +1,6 @@
-package com.project.test.test.repository;
+package com.project.my.repository;
 
-import com.project.test.test.model.User;
+import com.project.my.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
