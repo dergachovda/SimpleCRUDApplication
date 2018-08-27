@@ -1,19 +1,35 @@
 const debug = true;
 let url = debug ? 'http://localhost:8086' : '';
+
+let currentPage = 0;
+let totalPages = 1;
+let sizePage = -1;
+
 $(document).ready(function() {
-    $.ajax({
+    load(currentPage);
+
+    function load(page) {
+        let getUsersUrl = `${url}/users?page=${page}`;
+        if (sizePage != -1) {
+            getUsersUrl = `${getUsersUrl}&size=${sizePage}`;
+        }
+        $.ajax({
             beforeSend: function () {
-                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
+                $('body').append('<div class="loader"><img src="../static/img/loading.gif"></div>');
             },
-            url: `${url}/users`,
+            url: getUsersUrl,
             dataType: 'json',
             type: 'GET',
             success: function (data) {
                 $("header").show();
-                $(".info").append('Total users: ' + data.totalElements + ', Current page: ' + (data.number + 1) + ', Total Pages: ' + data.totalPages);
+                $(".info-data").remove();
+                $(".table-data").remove();
+                refreshInfo(data);
+                $(".table").append(`<div class="table-data"></div>`);
                 data.content.forEach(function (item) {
-                    $(".table").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
+                    $(".table-data").append('<div class="item-user-wrap"> <div class="item-user"> <input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' + item.firstName + '" class="firstName-user" readonly> <input type="text" value="' + item.lastName + '" class="lastName-user" readonly> <input type="text" value="' + item.birthDay + '" class="birthDay-user" readonly> <input type="text" value="' + item.gender + '" class="gender-user" readonly> </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
                 });
+                refreshPageLinks(data);
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 console.log(`Request failed: ${thrownError}` );
@@ -22,6 +38,65 @@ $(document).ready(function() {
                 $('.loader').remove();
             }
         });
+    }
+
+    function refreshPageLinks(data) {
+        $('.page-links').remove();
+        $('.page-links-panel').append(`<div class="page-links"></div>`);
+        for (let i = 1; i <= data.totalPages; i++) {
+            if ((i-1) == data.number) {
+                $('.page-links').append(`<span class="page-link">[<a href="#">${i}</a>]</B></span>`);
+            } else {
+                $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+            }
+        }
+    }
+
+    $('.page-links-panel').on('click', 'span.page-link', function() {
+        console.log("load page:" + ($(this).text() - 1));
+        load( ($(this).text() - 1) );
+    });
+
+    function refreshInfo(data) {
+        currentPage = data.number;
+        totalPages = data.totalPages;
+        sizePage = data.size;
+        $(".info").append(`<div class="info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</br>Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button> <button type="button" id="prevPageButton">Prev page</button> <button type="button" id="nextPageButton">Next page</button></div>`);
+        if (currentPage > 0) {
+            $("#prevPageButton").show();
+        } else {
+            $("#prevPageButton").hide();
+        }
+        if (currentPage < (totalPages-1)) {
+            $("#nextPageButton").show();
+        } else {
+            $("#nextPageButton").hide();
+        }
+    }
+
+    //change page size
+    $(".info").on('click', '#applyButton', function () {
+        sizePage =  $('.size').val();
+        load(currentPage);
+    });
+
+    //next page
+    $(".info").on('click', '#nextPageButton', function () {
+        currentPage++;
+        if (currentPage > (totalPages-1)) {
+            currentPage--;
+        }
+        load(currentPage);
+    });
+
+    //prev page
+    $(".info").on('click', '#prevPageButton', function () {
+        currentPage--;
+        if (currentPage < 0) {
+            currentPage++;
+        }
+        load(currentPage);
+    });
 
     // edit user
     $(".table").on('click', 'span.edit', function () {
@@ -116,7 +191,7 @@ $(document).ready(function() {
                     success: function(textStatus, status) {
                         console.log(textStatus);
                         console.log(status);
-                        location.reload();
+                        load(currentPage);
                     },
                     error: function(xhr, textStatus, error) {
                         console.log(xhr.responseText);
@@ -140,10 +215,9 @@ $(document).ready(function() {
 
     // add new user
     $(".add-user").on('click', function () {
-
         scroll_to_bottom(500);
         var newUser = $('<div class="item-user-wrap new-user"> <div class="item-user"> <input type="text" value="" class="id-user" readonly> <input type="text" value="" class="firstName-user" readonly> <input type="text" value="" class="lastName-user" readonly> <input type="text" value="" class="birthDay-user" readonly> <input type="text" value="" class="gender-user" readonly> </div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
-        $(".table").append(newUser);
+        $(".table-data").append(newUser);
         $(".item-user-wrap.new-user .item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
         $(".item-user-wrap.new-user .save").addClass('active');
         $(".item-user-wrap.new-user .edit").hide();
@@ -191,7 +265,7 @@ $(document).ready(function() {
         }
     });
 
-    // edit user line
+
     $(".close").on('click', function () {
         location.reload();
     });

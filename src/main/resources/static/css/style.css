@@ -6,8 +6,8 @@ body {
 * {
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
-	font-family: 'Roboto Condensed', sans-serif;
-	font-size: 13px;
+    font-family: 'Tangerine', serif;
+    font-size: 14px;
 	color: #6d6c6c;
 	font-weight: 300;
 }
@@ -25,7 +25,7 @@ header {
 }
 
 .button-wrap {
-	width: 1000px;
+	width: 650px;
 	height: auto;
 	overflow: hidden;
 	display: -webkit-box;
@@ -34,7 +34,6 @@ header {
 	display: -webkit-flex;
 	display: flex;
 	-webkit-justify-content: space-between;
-	-ms-flex-pack: space-between;
 	justify-content: space-between;
 	-webkit-align-items: center;
 	-ms-flex-align: center;
@@ -87,7 +86,6 @@ header {
 	display: -webkit-flex;
 	display: flex;
 	-webkit-justify-content: space-between;
-	-ms-flex-pack: space-between;
 	justify-content: space-between;
 	-webkit-align-items: center;
 	-ms-flex-align: center;
@@ -119,7 +117,42 @@ header {
 
 
 .info {
-	height: 30px;
+	height: auto;
+}
+
+.size {
+	width: 30px;
+}
+
+.apply {
+	width: 50px;
+	height: 20px;
+	background-color: #fff;
+	color: #252088;
+	border-color: #252088;
+	border-style: solid;
+	border-width: 2px 2px 2px 2px;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-justify-content: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-align-items: center;
+	-ms-flex-align: center;
+	align-items: center;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 15px;
+	font-weight: 300;
+	text-transform: uppercase;
+	cursor: pointer;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
 }
 
 .header-table {
@@ -301,4 +334,21 @@ header {
  .loader img {
  	width: 130px;
  	height: auto;
+ }
+
+ .page-links-panel {
+     width: 650px;
+ }
+
+ .page-links {
+     padding: 15px;
+     text-align: center;
+     display: -webkit-flex;
+     -webkit-justify-content: space-around;
+     display: flex;
+     justify-content: space-around;
+ }
+
+ .page-link {
+     flex: 2 1 20px;
  }
