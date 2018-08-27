@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     function load(page) {
         let getUsersUrl = `${url}/users?page=${page}`;
-        if (sizePage != -1) {
+        if (sizePage !== -1) {
             getUsersUrl = `${getUsersUrl}&size=${sizePage}`;
         }
         $.ajax({
@@ -62,7 +62,7 @@ $(document).ready(function() {
         $('.page-links-panel').append(`<div class="page-links"></div>`);
         for (let i = 1; i <= data.totalPages; i++) {
             if ((i-1) == data.number) {
-                $('.page-links').append(`<span class="page-link">[<a href="#">${i}</a>]</B></span>`);
+                $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
             } else {
                 $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
             }
@@ -146,7 +146,7 @@ $(document).ready(function() {
         ) {
             alert("Please, fill all fields!");
         }
-        var dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
+        let dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
         if ($(this).hasClass('add-user')) {
             //add new user
             $.ajax({
@@ -192,15 +192,15 @@ $(document).ready(function() {
                     console.log(textStatus);
                     console.log(error);
                 },
-                complete: location.reload()
+                complete: load(currentPage)
             });
         }
     });
 
     //delete user 
     $(".table").on('click', 'span.delete', function() {
-        var activeSpan = $(this);
-        var id = $(this).siblings(".item-user").children("input.id-user").val();
+        let activeSpan = $(this);
+        let id = $(this).siblings(".item-user").children("input.id-user").val();
         if (!$(this).hasClass('new-user')) {
             if (confirm("Delete the user?")) {
                 $.ajax({
@@ -228,13 +228,14 @@ $(document).ready(function() {
 
     //scroll down
     function scroll_to_bottom(speed) {
-        var height = $("body").height();
+        let height = $("body").height();
         $("html,body").animate({"scrollTop": height}, speed);
     }
 
     // add new user
     $(".add-user").on('click', function () {
         scroll_to_bottom(500);
+
         const newUser = $('<div class="item-user-wrap new-user"> <div class="item-user">'+
         '<input type="text" value="" class="id-user" readonly>'+
         '<input type="text" value="" class="firstName-user" readonly>'+
@@ -247,52 +248,6 @@ $(document).ready(function() {
         $(".item-user-wrap.new-user .save").addClass('active');
         $(".item-user-wrap.new-user .edit").hide();
 
-    });
-
-    // search a user
-    function search() {
-
-        var object = $('.item-user');
-        var search = $('#spterm').val().toLowerCase();
-        var marginTop = $('.header').height();
-        var countUser = 0;
-
-        $.each(object, function () {
-
-            var idUser = $(this).children('input.id-user').val().toLowerCase();
-            var idFirstName = $(this).children('input.firstName-user').val().toLowerCase();
-
-            if ((idCity == search) || (idFirstName == search)) {
-
-                var height = $(this).children('input.id-user').offset().top - marginTop - 5;
-                $("html,body").animate({"scrollTop": height}, 800);
-                countUser += 1;
-            }
-
-            return countUser;
-        });
-
-        if (countUser == 0) {
-            alert("User not found");
-        }
-
-    }
-
-    // search a user by button
-    $(".search .button").on('click', function () {
-        search();
-    });
-
-    // search a user by enter
-    $('input#spterm').keydown(function (e) {
-        if (e.keyCode === 13) {
-            search();
-        }
-    });
-
-
-    $(".close").on('click', function () {
-        location.reload();
     });
 
 });
