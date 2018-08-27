@@ -43,11 +43,11 @@ $(document).ready(function() {
     function refreshPageLinks(data) {
         $('.page-links').remove();
         $('.page-links-panel').append(`<div class="page-links"></div>`);
-        for (var i = 1; i <= data.totalPages; i++) {
+        for (let i = 1; i <= data.totalPages; i++) {
             if ((i-1) == data.number) {
-                $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
+                $('.page-links').append(`<span class="page-link">[<a href="#">${i}</a>]</B></span>`);
             } else {
-                $('.page-links').append(`<span class="page-link">${i}</span>`);
+                $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
             }
         }
     }
