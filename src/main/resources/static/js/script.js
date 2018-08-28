@@ -60,11 +60,47 @@ $(document).ready(function() {
     const refreshPageLinks = (data) => {
         $('.page-links').remove();
         $('.page-links-panel').append(`<div class="page-links"></div>`);
-        for (let i = 1; i <= data.totalPages; i++) {
-            if ((i-1) == data.number) {
-                $('.page-links').append(`<span class="page-link">[${i}]</B></span>`);
+        if (data.totalPages <= 20) {
+            for (let i = 1; i <= data.totalPages; i++) {
+                if ((i - 1) == data.number) {
+                    $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                } else {
+                    $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                }
+            }
+        } else {
+            if (data.number <= 9) {
+                for (let i = 1; i <= 18; i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
+                $('.page-links').append(`<span class="page-link">...</span>`);
+                $('.page-links').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
+            } else if (data.number >= (data.totalPages-10)) {
+                $('.page-links').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links').append(`<span class="page-link">...</span>`);
+                for (let i = (data.totalPages-17); i <= data.totalPages; i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
             } else {
-                $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                $('.page-links').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links').append(`<span class="page-link">...</span>`);
+                for (let i = (data.number-7); i <= (data.number+8); i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
+                $('.page-links').append(`<span class="page-link">...</span>`);
+                $('.page-links').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
             }
         }
     }
