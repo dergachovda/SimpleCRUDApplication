@@ -23,9 +23,9 @@ $(document).ready(function() {
             success: function (data) {
                 $("header").show();
                 $(".info-data").remove();
-                $(".table-data").remove();
                 refreshInfo(data);
-                $(".table").append(`<div class="table-data"></div>`);
+                //$(".table").append(`<div class="table-data"></div>`);
+                $(".item-user-wrap").remove();
                 data.content.forEach(function (item) {
                     renderItem(item);
                 });
@@ -41,12 +41,12 @@ $(document).ready(function() {
     }
 
     const renderItem = (item) => 
-        $(".table-data").append('<div class="item-user-wrap"> <div class="item-user"> '+
+        $(".body-table").append('<div class="item-user-wrap"> <div class="item-user"> '+
         '<input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' +
         item.firstName + 
         '" class="firstName-user" readonly> <input type="text" value="' +
         item.lastName + '" class="lastName-user" readonly> <input type="date" id="birthDay" value="' + item.birthDay +
-        '" class="birthDay-user" readonly> ' +getGenderSelect(true, item.userId, item.gender) +
+        '" class="birthDay-user" readonly> ' + getGenderSelect(true, item.userId, item.gender) +
         ' </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
     
 
@@ -58,49 +58,48 @@ $(document).ready(function() {
     
 
     const refreshPageLinks = (data) => {
-        $('.page-links').remove();
-        $('.page-links-panel').append(`<div class="page-links"></div>`);
+        $('.page-link').remove();
         if (data.totalPages <= 20) {
             for (let i = 1; i <= data.totalPages; i++) {
                 if ((i - 1) == data.number) {
-                    $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                    $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                 } else {
-                    $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
                 }
             }
         } else {
             if (data.number <= 9) {
                 for (let i = 1; i <= 18; i++) {
                     if ((i - 1) == data.number) {
-                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                     } else {
-                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
                     }
                 }
-                $('.page-links').append(`<span class="page-link">...</span>`);
-                $('.page-links').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
             } else if (data.number >= (data.totalPages-10)) {
-                $('.page-links').append(`<span class="page-link"><a href="#">1</a></span>`);
-                $('.page-links').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
                 for (let i = (data.totalPages-17); i <= data.totalPages; i++) {
                     if ((i - 1) == data.number) {
-                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                     } else {
-                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
                     }
                 }
             } else {
-                $('.page-links').append(`<span class="page-link"><a href="#">1</a></span>`);
-                $('.page-links').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
                 for (let i = (data.number-7); i <= (data.number+8); i++) {
                     if ((i - 1) == data.number) {
-                        $('.page-links').append(`<span class="page-link">[${i}]</span>`);
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                     } else {
-                        $('.page-links').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
                     }
                 }
-                $('.page-links').append(`<span class="page-link">...</span>`);
-                $('.page-links').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
             }
         }
     }
@@ -130,7 +129,7 @@ $(document).ready(function() {
         currentPage = data.number;
         totalPages = data.totalPages;
         sizePage = data.size;
-        $(".info").append(`<div class="info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</br>Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button> <button type="button" id="prevPageButton">Prev page</button> <button type="button" id="nextPageButton">Next page</button></div>`);
+        $(".header").append(`<div class="header-item info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</div><div class="header-item info-data">Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button> <button type="button" id="prevPageButton">Prev page</button> <button type="button" id="nextPageButton">Next page</button></div>`);
         if (currentPage > 0) {
             $("#prevPageButton").show();
         } else {
@@ -144,13 +143,13 @@ $(document).ready(function() {
     }
 
     //change page size
-    $(".info").on('click', '#applyButton', function () {
+    $(".header").on('click', '#applyButton', function () {
         sizePage =  $('.size').val();
         load(currentPage);
     });
 
     //next page
-    $(".info").on('click', '#nextPageButton', function () {
+    $(".header").on('click', '#nextPageButton', function () {
         currentPage++;
         if (currentPage > (totalPages-1)) {
             currentPage--;
@@ -159,7 +158,7 @@ $(document).ready(function() {
     });
 
     //prev page
-    $(".info").on('click', '#prevPageButton', function () {
+    $(".header").on('click', '#prevPageButton', function () {
         currentPage--;
         if (currentPage < 0) {
             currentPage++;
@@ -273,7 +272,7 @@ $(document).ready(function() {
     }
 
     // add new user
-    $(".add-user").on('click', function () {
+    $(".add-user").on('click', '#addButton', function () {
         scroll_to_bottom(500);
 
         const newUser = $('<div class="item-user-wrap new-user"> <div class="item-user">'+
