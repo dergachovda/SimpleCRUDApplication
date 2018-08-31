@@ -1,85 +1,90 @@
-html, body {
-    height: 100%;
-}
-
-body {
+* {
     margin: 0;
     padding: 0;
 }
 
 .wrapper {
+    height: 100%;
     display: flex;
-    min-height: 100vh;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header {
     padding: 10px 16px;
     background: dimgray;
-    color: #f1f1f1;
+    color: white;
 
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
+
+.header div {
+    margin: 5px 2% 5px 2%;
+}
+
+.add-user {
+    min-width: 100px;
+    flex: 1;
+    order: 2;
+}
+
+.info-data {
+    min-width: 400px;
+    flex: 1;
+    order: 1;
+}
+
 
 .table {
+    background: cornsilk;
     display: flex;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
     align-items: center;
     flex-direction: column;
-    font-size: 1em;
+    /*font-size: 1em;*/
 }
 
-.header-table {
+.tableHeader, .tableRow{
+    width: 100%;
+    height: 2em;
     display: flex;
     flex-direction: row;
     justify-content: center;
+    /*align-items: center;*/
+    text-align: center;
+    font-size: 1em;
 }
-
-.header-table div {
-    padding: 10px;
-    margin-bottom: 5px;
-    border: 1px solid silver;
+.tableHeader {
+    font-weight: bold;
+    font-family: bold;
 }
 
 .id {
-    width: 5%;
+    border: 1px solid silver;
+    padding: 1px;
+    flex-basis: 5%;
+    min-width: 25px;
 }
-.firstName .lastName {
-    width: 20%;
+.firstName, .lastName {
+    border: 1px solid silver;
+    padding: 1px;
+    flex-basis: 25%;
+    min-width: 125px;
 }
-.birthDay .gender {
-    width: 10%;
-}
-
-.action {
-    width: 10%;
-}
-
-.body-table {
-
-}
-.item-user-wrap {
-    height: 30px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: nowrap;
-    justify-content: center;
-    align-items: flex-start;
+.birthDay, .gender, .action {
+    border: 1px solid silver;
+    padding: 1px;
+    flex-basis: 10%;
+    min-width: 90px;
 }
 
 .page-links-panel {
     width: 100%;
-    background:  dimgray;
+    background: dimgray;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -96,7 +101,7 @@ body {
 
 .page-link {
     padding: 10px 16px;
-    color: yellow;
+    color: cornsilk;
     width: 35px;
     height: 25px;
     margin-top: 10px;
@@ -107,23 +112,17 @@ body {
     text-align: center;
 }
 
-a:link {
-    color: white;
-}
-a:visited {
-    color: white;
-}
-a:hover {
+a:link, a:visited, a:hover {
     color: white;
 }
 
-.item-user-wrap .edit,
-.item-user-wrap .save,
-.item-user-wrap .delete {
+.tableRow .edit,
+.tableRow .save,
+.tableRow .delete {
     display: inline-block;
     width: 25px;
     height: 25px;
-    margin: 15px 0px 5px 5px;
+    margin: 1px 1px 1px 1px;
     cursor: pointer;
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
@@ -132,11 +131,11 @@ a:hover {
     transition: all .3s ease-in-out;
 }
 
-.item-user-wrap .edit {
+.tableRow .edit {
     background: url(../img/edit.png);
 }
 
-.item-user-wrap .save {
+.tableRow .save {
     display: none;
     background: url(../img/save.png);
 }
@@ -145,19 +144,19 @@ a:hover {
     display: inline-block;
 }
 
-.item-user-wrap .delete {
+.tableRow .delete {
     background: url(../img/delete.png);
 }
 
-.item-user-wrap .edit:hover {
+.tableRow .edit:hover {
     background: url(../img/edit-hover.png);
 }
 
-.item-user-wrap .save:hover {
+.tableRow .save:hover {
     background: url(../img/save-hover.png);
 }
 
-.item-user-wrap .delete:hover {
+.tableRow .delete:hover {
     background: url(../img/delete-hover.png);
 }
 
@@ -185,4 +184,23 @@ a:hover {
 .loader img {
     width: 130px;
     height: auto;
+}
+
+.add-user-data {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+input.id {
+    width: 30px;
+}
+input.firstName, input.lastName {
+    width: 200px;
+}
+input.birthDay {
+    width: 130px;
+}
+input.gender {
+    width: 50px;
 }

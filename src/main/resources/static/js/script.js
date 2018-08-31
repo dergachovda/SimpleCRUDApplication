@@ -4,6 +4,7 @@ let url = debug ? 'http://localhost:8086' : '';
 let currentPage = 0;
 let totalPages = 1;
 let sizePage = -1;
+let users;
 
 $(document).ready(function() {
     load(currentPage);
@@ -22,11 +23,10 @@ $(document).ready(function() {
             type: 'GET',
             success: function (data) {
                 $("header").show();
-                $(".info-data").remove();
-                refreshInfo(data);
-                //$(".table").append(`<div class="table-data"></div>`);
-                $(".item-user-wrap").remove();
-                data.content.forEach(function (item) {
+                renderInfo(data);
+                $(".tableRow").remove();
+                users = data.content;
+                users.forEach(function (item) {
                     renderItem(item);
                 });
                 refreshPageLinks(data);
@@ -41,74 +41,33 @@ $(document).ready(function() {
     }
 
     const renderItem = (item) => 
-        $(".body-table").append('<div class="item-user-wrap"> <div class="item-user"> '+
-        '<input type="text" value="' + item.userId + '" class="id-user" readonly> <input type="text" value="' +
-        item.firstName + 
-        '" class="firstName-user" readonly> <input type="text" value="' +
-        item.lastName + '" class="lastName-user" readonly> <input type="date" id="birthDay" value="' + item.birthDay +
-        '" class="birthDay-user" readonly> ' + getGenderSelect(true, item.userId, item.gender) +
-        ' </div> <span class="edit"></span><span class="save"></span><span class="delete"></span></div>');
-    
+        $(".table").append(
+            '<div class="tableRow">' +
+                '<div class="id">' + item.userId + '</div>' +
+                '<div class="firstName">' + item.firstName + '</div>' +
+                '<div class="lastName">' + item.lastName + '</div>' +
+                '<div class="birthDay">' + item.birthDay + '</div>' +
+                '<div class="gender">' + item.gender + '</div>' +
+                '<div class="action">' +
+                    '<span class="edit"></span>' +
+                    '<span class="save"></span>' +
+                    '<span class="delete"></span>' +
+                '</div>' +
+            '</div>'
+        );
 
     const getGenderSelect = (disabled, id, value) => 
-        `<select ${disabled ? "disabled" : ""} id="genderSelect"> `+
+        `<select ${disabled ? "disabled" : ""} id="genderSelect" class="gender"> `+
         `<option value='' ${!id & "selected"}></option>`+
         `<option value='Female' ${value==='Female' ? "selected" : ""}>Female</option>`+
         `<option value='Male'  ${value==='Male' ? "selected" : ""}>Male</option></select>`;
-    
 
-    const refreshPageLinks = (data) => {
-        $('.page-link').remove();
-        if (data.totalPages <= 20) {
-            for (let i = 1; i <= data.totalPages; i++) {
-                if ((i - 1) == data.number) {
-                    $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
-                } else {
-                    $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
-                }
-            }
-        } else {
-            if (data.number <= 9) {
-                for (let i = 1; i <= 18; i++) {
-                    if ((i - 1) == data.number) {
-                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
-                    } else {
-                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
-                    }
-                }
-                $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
-            } else if (data.number >= (data.totalPages-10)) {
-                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
-                $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                for (let i = (data.totalPages-17); i <= data.totalPages; i++) {
-                    if ((i - 1) == data.number) {
-                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
-                    } else {
-                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
-                    }
-                }
-            } else {
-                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
-                $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                for (let i = (data.number-7); i <= (data.number+8); i++) {
-                    if ((i - 1) == data.number) {
-                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
-                    } else {
-                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
-                    }
-                }
-                $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
-            }
-        }
-    };
 
     const getItemData = (activeSpan) => {
-        const id = $(activeSpan).siblings(".item-user").children("input.id-user").val();
-        const firstName = $(activeSpan).siblings(".item-user").children("input.firstName-user").val();
-        const lastName = $(activeSpan).siblings(".item-user").children("input.lastName-user").val();
-        let birthDay = $(activeSpan).siblings(".item-user").children("input.birthDay-user").val();
+        const id = $(activeSpan).siblings(".item-user").children("input.id").val();
+        const firstName = $(activeSpan).siblings(".item-user").children("input.firstName").val();
+        const lastName = $(activeSpan).siblings(".item-user").children("input.lastName").val();
+        let birthDay = $(activeSpan).siblings(".item-user").children("input.birthDay").val();
         birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
         const gender = $(activeSpan).siblings(".item-user").find("#genderSelect option:selected").val();
         return {
@@ -129,11 +88,32 @@ $(document).ready(function() {
         load(pageLink);
     });
 
-    function refreshInfo(data) {
+    function renderInfo(data) {
+        $(".info-data").remove();
         currentPage = data.number;
         totalPages = data.totalPages;
         sizePage = data.size;
-        $(".header").append(`<div class="header-item info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</div><div class="header-item info-data">Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button></div>`);
+        $(".header").append(
+            '<div class="info-data">' +
+                `Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}` +
+            '</div>' +
+            '<div class="info-data">' +
+                `Size <input type="text" value="${sizePage}" class="size">` +
+                '<button type="button" id="applyButton">Apply</button>' +
+            '</div>'
+        );
+
+        $(".add-user-data").remove();
+        const userData = $(
+            '<div class="add-user-data">' +
+                '<div> Id:<input type="text" value="" class="id"></div>' +
+                '<div>  First name:<input type="text" value="" class="firstName"></div>' +
+                '<div>  Last name:<input type="text" value="" class="lastName"></div>' +
+                '<div><input type="date" class="birthDay"></div>' +
+                '<div>' + getGenderSelect() + '</div>' +
+            '</div>'
+        );
+        $(".add-user").append(userData);
     }
 
     //change page size
@@ -144,7 +124,7 @@ $(document).ready(function() {
 
     // edit user
     $(".table").on('click', 'span.edit', function () {
-        $(this).siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
+        $(this).siblings(".item-user").children("input:not(.id), textarea").removeAttr("readonly").addClass('active');
         $(this).siblings(".save").addClass('active');
         $(this).siblings(".item-user").find("#genderSelect").removeAttr("disabled");
         $(this).hide();
@@ -214,8 +194,9 @@ $(document).ready(function() {
 
     //delete user 
     $(".table").on('click', 'span.delete', function() {
+        console.log('click - span.delete');
         let activeSpan = $(this);
-        let id = $(this).siblings(".item-user").children("input.id-user").val();
+        let id = $(this).siblings(".item-user").children("input.id").val();
         if (!$(this).hasClass('new-user')) {
             if (confirm("Delete the user?")) {
                 $.ajax({
@@ -248,22 +229,77 @@ $(document).ready(function() {
     }
 
     // add new user
-    $(".add-user").on('click', '#addButton', function () {
-        scroll_to_bottom(500);
-
-        const newUser = $('<div class="item-user-wrap new-user"> <div class="item-user">'+
-        '<input type="text" value="" class="id-user" readonly>'+
-        '<input type="text" value="" class="firstName-user" readonly>'+
-        '<input type="text" value="" class="lastName-user" readonly>'+
-        //'<input type="text" value="" class="birthDay-user" readonly>'+
-        '<input type="date" id="birthDay" readonly>'+
-        getGenderSelect() +
-        '</div> <span class="edit"></span> <span class="save add-user"></span> <span class="delete new-user"></span> </div>');
+    $(".header").on('click', '#addButton', function () {
+        console.log('add user button click');
+        // scroll_to_bottom(500);
+        const newUser = $(
+            '<div class="tableRow new-user">' +
+                '<div class="item-user">' +
+                    '<input type="text" value="" class="id" readonly>' +
+                    '<input type="text" value="" class="firstName" readonly>' +
+                    '<input type="text" value="" class="lastName" readonly>' +
+                    //'<input type="text" value="" class="birthDay-user" readonly>' +
+                    '<input type="date" class="birthDay" readonly>' +
+                    getGenderSelect() +
+                '</div>' +
+                '<div class="action">' +
+                    '<span class="edit"></span>' +
+                    '<span class="save add-user"></span>' +
+                    '<span class="delete new-user"></span>' +
+                '</div>' +
+            '</div>'
+        );
         $(".table-data").append(newUser);
-        $(".item-user-wrap.new-user .item-user").children("input:not(.id-user), textarea").removeAttr("readonly").addClass('active');
-        $(".item-user-wrap.new-user .save").addClass('active');
-        $(".item-user-wrap.new-user .edit").hide();
+        $(".tableRow.new-user .item-user").children("input:not(.id), textarea").removeAttr("readonly").addClass('active');
+        $(".tableRow.new-user .save").addClass('active');
+        $(".tableRow.new-user .edit").hide();
 
     });
+    const refreshPageLinks = (data) => {
+        $('.page-link').remove();
+        if (data.totalPages <= 20) {
+            for (let i = 1; i <= data.totalPages; i++) {
+                if ((i - 1) == data.number) {
+                    $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
+                } else {
+                    $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                }
+            }
+        } else {
+            if (data.number <= 9) {
+                for (let i = 1; i <= 18; i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
+            } else if (data.number >= (data.totalPages-10)) {
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                for (let i = (data.totalPages-17); i <= data.totalPages; i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
+            } else {
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                for (let i = (data.number-7); i <= (data.number+8); i++) {
+                    if ((i - 1) == data.number) {
+                        $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
+                    } else {
+                        $('.page-links-panel').append(`<span class="page-link"><a href="#">${i}</a></span>`);
+                    }
+                }
+                $('.page-links-panel').append(`<span class="page-link">...</span>`);
+                $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
+            }
+        }
+    };
 
 });
