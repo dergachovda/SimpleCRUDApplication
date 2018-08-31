@@ -23,17 +23,31 @@
 }
 
 .header div {
-    margin: 5px 2% 5px 2%;
+    margin: 1px 1px 1px 1px;
 }
 
 .add-user {
-    min-width: 100px;
+    min-width: 45%;
     flex: 1;
     order: 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.add-user * {
+    height: 1.5em;
+}
+.add-user-button {
+    order: 2;
+}
+.add-user-data{
+    order: 1;
 }
 
 .info-data {
-    min-width: 400px;
+    min-width: 100%;
     flex: 1;
     order: 1;
 }
@@ -60,7 +74,14 @@
 }
 .tableHeader {
     font-weight: bold;
-    font-family: bold;
+    /*font-family: bold;*/
+}
+
+.tableRow input, select {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
 }
 
 .id {
@@ -75,7 +96,13 @@
     flex-basis: 25%;
     min-width: 125px;
 }
-.birthDay, .gender, .action {
+.birthDay {
+    border: 1px solid silver;
+    padding: 1px;
+    flex-basis: 15%;
+    min-width: 150px;
+}
+.gender, .action {
     border: 1px solid silver;
     padding: 1px;
     flex-basis: 10%;
@@ -127,7 +154,7 @@ a:link, a:visited, a:hover {
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
     -o-transition: all .3s ease-in-out;
-    -ms-transition: all .3s ease-in-out;
+    /*-ms-transition: all .3s ease-in-out;*/
     transition: all .3s ease-in-out;
 }
 
@@ -162,8 +189,8 @@ a:link, a:visited, a:hover {
 
 .loader {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    /*top: 0px;*/
+    /*left: 0px;*/
     background-color: #fff;
     width: 100vw;
     height: 100vh;

@@ -6,7 +6,7 @@ let totalPages = 1;
 let sizePage = -1;
 let users;
 
-$(document).ready(function() {
+$(document).ready(function () {
     load(currentPage);
 
     function load(page) {
@@ -24,15 +24,16 @@ $(document).ready(function() {
             success: function (data) {
                 $("header").show();
                 renderInfo(data);
+                renderAddUserData();
                 $(".tableRow").remove();
                 users = data.content;
                 users.forEach(function (item) {
-                    renderItem(item);
+                    renderTableRow(item);
                 });
-                refreshPageLinks(data);
+                renderPageLinks(data);
             },
-            error: function(xhr, ajaxOptions, thrownError) {
-                console.log(`Request failed: ${thrownError}` );
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(`Request failed: ${thrownError}`);
             },
             complete: function () {
                 $('.loader').remove();
@@ -40,38 +41,38 @@ $(document).ready(function() {
         });
     }
 
-    const renderItem = (item) => 
+    const renderTableRow = (item) =>
         $(".table").append(
             '<div class="tableRow">' +
-                '<div class="id">' + item.userId + '</div>' +
-                '<div class="firstName">' + item.firstName + '</div>' +
-                '<div class="lastName">' + item.lastName + '</div>' +
-                '<div class="birthDay">' + item.birthDay + '</div>' +
-                '<div class="gender">' + item.gender + '</div>' +
-                '<div class="action">' +
-                    '<span class="edit"></span>' +
-                    '<span class="save"></span>' +
-                    '<span class="delete"></span>' +
-                '</div>' +
+            '<div class="id">' + item.userId + '</div>' +
+            '<div class="firstName">' + item.firstName + '</div>' +
+            '<div class="lastName">' + item.lastName + '</div>' +
+            '<div class="birthDay">' + item.birthDay + '</div>' +
+            '<div class="gender">' + item.gender + '</div>' +
+            '<div class="action">' +
+            '<span class="edit"></span>' +
+            '<span class="save"></span>' +
+            '<span class="delete"></span>' +
+            '</div>' +
             '</div>'
         );
 
-    const getGenderSelect = (disabled, id, value) => 
-        `<select ${disabled ? "disabled" : ""} id="genderSelect" class="gender"> `+
-        `<option value='' ${!id & "selected"}></option>`+
-        `<option value='Female' ${value==='Female' ? "selected" : ""}>Female</option>`+
-        `<option value='Male'  ${value==='Male' ? "selected" : ""}>Male</option></select>`;
+    const getGenderSelect = (disabled, id, value) =>
+        `<select ${disabled ? "disabled" : ""} id="genderSelect" class="gender"> ` +
+        `<option value='' ${!id & "selected"}></option>` +
+        `<option value='Female' ${value === 'Female' ? "selected" : ""}>Female</option>` +
+        `<option value='Male'  ${value === 'Male' ? "selected" : ""}>Male</option></select>`;
 
 
-    const getItemData = (activeSpan) => {
-        const id = $(activeSpan).siblings(".item-user").children("input.id").val();
-        const firstName = $(activeSpan).siblings(".item-user").children("input.firstName").val();
-        const lastName = $(activeSpan).siblings(".item-user").children("input.lastName").val();
-        let birthDay = $(activeSpan).siblings(".item-user").children("input.birthDay").val();
-        birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
-        const gender = $(activeSpan).siblings(".item-user").find("#genderSelect option:selected").val();
+    const getItemData = (curRow) => {
+        const id = parseInt(curRow.children('.id').text());
+        const firstName = curRow.children('.firstName').children('input').val();
+        const lastName = curRow.children('.lastName').children('input').val();
+        let birthDay = curRow.children('.birthDay').children('input').val();
+        // birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
+        const gender = curRow.children('.gender').find("#genderSelect option:selected").val();
         return {
-            "userId" : id,
+            "userId": id,
             "firstName": firstName,
             "lastName": lastName,
             "birthDay": birthDay,
@@ -79,7 +80,21 @@ $(document).ready(function() {
         };
     };
 
-    $('.page-links-panel').on('click', 'span.page-link', function() {
+    const getNewUserData = () => {
+        const firstName = $(".add-user-data").children('.firstName').children('input').val();
+        const lastName = $(".add-user-data").children('.lastName').children('input').val();
+        let birthDay = $(".add-user-data").children('.birthDay').children('input').val();
+        // birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
+        const gender = $(".add-user-data").children('.gender').find("#genderSelect option:selected").val();
+        return {
+            "firstName": firstName,
+            "lastName": lastName,
+            "birthDay": birthDay,
+            "gender": gender
+        };
+    };
+
+    $('.page-links-panel').on('click', 'span.page-link', function () {
         let pageLink = ($(this).text() - 1);
         if (pageLink == null) {
             return;
@@ -88,6 +103,18 @@ $(document).ready(function() {
         load(pageLink);
     });
 
+    const renderAddUserData = () => {
+        $(".add-user-data").remove();
+        $(".add-user").append(
+            '<div class="add-user-data">' +
+            '<div class="firstName">First name:<input type="text" value=""></div>' +
+            '<div class="lastName">Last name:<input type="text" value=""></div>' +
+            '<div class="birthDay"><input type="date" class="birthDay"></div>' +
+            '<div class="gender">' + getGenderSelect() + '</div>' +
+            '</div>'
+        );
+    };
+
     function renderInfo(data) {
         $(".info-data").remove();
         currentPage = data.number;
@@ -95,167 +122,135 @@ $(document).ready(function() {
         sizePage = data.size;
         $(".header").append(
             '<div class="info-data">' +
-                `Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}` +
+            `Total users: ${data.totalElements}, Current page: ${(currentPage + 1)}, Total Pages: ${totalPages}` +
             '</div>' +
             '<div class="info-data">' +
-                `Size <input type="text" value="${sizePage}" class="size">` +
-                '<button type="button" id="applyButton">Apply</button>' +
+            `Size <input type="text" value="${sizePage}" class="size">` +
+            '<button type="button" id="applyButton">Apply</button>' +
             '</div>'
         );
-
-        $(".add-user-data").remove();
-        const userData = $(
-            '<div class="add-user-data">' +
-                '<div> Id:<input type="text" value="" class="id"></div>' +
-                '<div>  First name:<input type="text" value="" class="firstName"></div>' +
-                '<div>  Last name:<input type="text" value="" class="lastName"></div>' +
-                '<div><input type="date" class="birthDay"></div>' +
-                '<div>' + getGenderSelect() + '</div>' +
-            '</div>'
-        );
-        $(".add-user").append(userData);
     }
 
     //change page size
     $(".header").on('click', '#applyButton', function () {
-        sizePage =  $('.size').val();
+        sizePage = $('.size').val();
         load(currentPage);
     });
 
     // edit user
     $(".table").on('click', 'span.edit', function () {
-        $(this).siblings(".item-user").children("input:not(.id), textarea").removeAttr("readonly").addClass('active');
-        $(this).siblings(".save").addClass('active');
-        $(this).siblings(".item-user").find("#genderSelect").removeAttr("disabled");
+        let curRow = $(this).parent().parent();
+        let id = parseInt(curRow.children('.id').text());
+        let curUser = users.find(function (obj) {
+            return obj.userId === id;
+        });
+        curRow.children('.firstName').empty().append(
+            `<input type="text" value="${curUser.firstName}">`
+        );
+        curRow.children('.lastName').empty().append(
+            `<input type="text" value="${curUser.lastName}">`
+        );
+        curRow.children('.birthDay').empty().append(
+            `<input type="date" class="birthDay" value="${curUser.birthDay}">`
+        );
+        curRow.children('.gender').empty().append(
+            getGenderSelect(false, 1, curUser.gender)
+        );
+        $(this).siblings('.save').addClass('active');
         $(this).hide();
+        if (debug) {
+            console.log('span.edit click');
+            console.log('curRow:' + curRow);
+            console.log('id:' + id);
+            console.log('users:' + users);
+            console.log('curUser:' + curUser);
+        }
     });
 
-    // save or add new user
+    // save user
     $(".table").on('click', 'span.save', function (textStatus, xhr = null, error = null) {
-        const activeSpan = $(this);
-        const user = getItemData(this);
-
+        let curRow = $(this).parent().parent();
+        const user = getItemData(curRow);
         if (user.firstName === "" || user.lastName === "" || user.birthDay === "" || user.gender == "") {
             alert("Please, fill all fields!");
+            return;
         }
+        $.ajax({
+            contentType: "application/json",
+            // dataType: 'json',
+            url: `${url}/users/${user.userId}`,
+            type: 'PUT',
+            data: JSON.stringify(user),
+            success: function (textStatus, status) {
+                load(currentPage);
+                console.log(`Edit is ${status}`);
+            },
+            error: function (xhr, textStatus, error) {
+                console.log(xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            },
+            complete: function () {
 
-        let dataObject = {"firstName":user.firstName,"lastName":user.lastName,"birthDay":user.birthDay,"gender":user.gender};
-        if ($(this).hasClass('add-user')) {
-            //add new user
-            $.ajax({
-                url: `${url}/users`,
-                contentType: "application/json",
-                dataType: 'json',
-                type: 'POST',
-                data: JSON.stringify(dataObject),
-                success: function(data) {
-                    activeSpan.siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").removeClass('active');
-                    activeSpan.siblings(".edit").show();
-                    activeSpan.removeClass('active add-user');
-                    activeSpan.siblings("span.delete").removeClass('new-user');
-                    activeSpan.parent().removeClass('new-user');
-                    activeSpan.siblings(".item-user").children("input.id-user").val(data.userId);
-                    activeSpan.siblings(".item-user").find("#genderSelect").attr('disabled', 'true');
-                    load(currentPage);
-                },
-                error: function(xhr, textStatus, error) {
-                    console.log(xhr.responseText);
-                    console.log(xhr.statusText);
-                    console.log(textStatus);
-                    console.log(error);
-                    load(currentPage);
-                }
-            });
-        } else {
-            //edit user
-            $.ajax({
-                contentType: "application/json",
-                // dataType: 'json',
-                url: `${url}/users/${user.userId}`,
-                type: 'PUT',
-                data: JSON.stringify(dataObject),
-                success: function(textStatus, status) {
-                    activeSpan.siblings(".item-user").children("input:not(.id-user), textarea").removeAttr("readonly").removeClass('active');
-                    activeSpan.siblings(".edit").show();
-                    activeSpan.removeClass('active');
-                    console.log(`Edit is ${status}`);
-                    load(currentPage);
-                },
-                error: function(xhr, textStatus, error) {
-                    console.log(xhr.responseText);
-                    console.log(xhr.statusText);
-                    console.log(textStatus);
-                    console.log(error);
-                    load(currentPage);
-                }
-            });
-        }
+            }
+        });
     });
 
     //delete user 
-    $(".table").on('click', 'span.delete', function() {
-        console.log('click - span.delete');
-        let activeSpan = $(this);
-        let id = $(this).siblings(".item-user").children("input.id").val();
-        if (!$(this).hasClass('new-user')) {
-            if (confirm("Delete the user?")) {
-                $.ajax({
-                    url: `${url}/users/${id}`,
-                    contentType: "application/json",
-                    type: 'DELETE',
-                    success: function(textStatus, status) {
-                        console.log(textStatus);
-                        console.log(status);
-                        load(currentPage);
-                    },
-                    error: function(xhr, textStatus, error) {
-                        console.log(xhr.responseText);
-                        console.log(xhr.statusText);
-                        console.log(textStatus);
-                        console.log(error);
-                    }
-                });
-            }
-        } else {
-            //delete empty line
-            activeSpan.parent().remove();
+    $(".table").on('click', 'span.delete', function () {
+        if (debug) {
+            console.log('click - span.delete');
+        }
+        const curRow = $(this).parent().parent();
+        const id = parseInt(curRow.children('.id').text());
+        if (confirm("Delete the user?")) {
+            $.ajax({
+                url: `${url}/users/${id}`,
+                contentType: "application/json",
+                type: 'DELETE',
+                success: function (textStatus, status) {
+                    console.log(textStatus);
+                    console.log(status);
+                    load(currentPage);
+                },
+                error: function (xhr, textStatus, error) {
+                    console.log(xhr.responseText);
+                    console.log(xhr.statusText);
+                    console.log(textStatus);
+                    console.log(error);
+                }
+            });
         }
     });
-
-    //scroll down
-    function scroll_to_bottom(speed) {
-        let height = $("body").height();
-        $("html,body").animate({"scrollTop": height}, speed);
-    }
 
     // add new user
     $(".header").on('click', '#addButton', function () {
         console.log('add user button click');
-        // scroll_to_bottom(500);
-        const newUser = $(
-            '<div class="tableRow new-user">' +
-                '<div class="item-user">' +
-                    '<input type="text" value="" class="id" readonly>' +
-                    '<input type="text" value="" class="firstName" readonly>' +
-                    '<input type="text" value="" class="lastName" readonly>' +
-                    //'<input type="text" value="" class="birthDay-user" readonly>' +
-                    '<input type="date" class="birthDay" readonly>' +
-                    getGenderSelect() +
-                '</div>' +
-                '<div class="action">' +
-                    '<span class="edit"></span>' +
-                    '<span class="save add-user"></span>' +
-                    '<span class="delete new-user"></span>' +
-                '</div>' +
-            '</div>'
-        );
-        $(".table-data").append(newUser);
-        $(".tableRow.new-user .item-user").children("input:not(.id), textarea").removeAttr("readonly").addClass('active');
-        $(".tableRow.new-user .save").addClass('active');
-        $(".tableRow.new-user .edit").hide();
-
+        const user = getNewUserData();
+        if (user.firstName === "" || user.lastName === "" || user.birthDay === "" || user.gender == "") {
+            alert("Please, fill all fields!");
+            return;
+        }
+        $.ajax({
+            url: `${url}/users`,
+            contentType: "application/json",
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify(user),
+            success: function(data) {
+                load(currentPage);
+            },
+            error: function(xhr, textStatus, error) {
+                console.log(xhr.responseText);
+                console.log(xhr.statusText);
+                console.log(textStatus);
+                console.log(error);
+            }
+        });
     });
-    const refreshPageLinks = (data) => {
+
+    const renderPageLinks = (data) => {
         $('.page-link').remove();
         if (data.totalPages <= 20) {
             for (let i = 1; i <= data.totalPages; i++) {
@@ -276,10 +271,10 @@ $(document).ready(function() {
                 }
                 $('.page-links-panel').append(`<span class="page-link">...</span>`);
                 $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
-            } else if (data.number >= (data.totalPages-10)) {
+            } else if (data.number >= (data.totalPages - 10)) {
                 $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
                 $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                for (let i = (data.totalPages-17); i <= data.totalPages; i++) {
+                for (let i = (data.totalPages - 17); i <= data.totalPages; i++) {
                     if ((i - 1) == data.number) {
                         $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                     } else {
@@ -289,7 +284,7 @@ $(document).ready(function() {
             } else {
                 $('.page-links-panel').append(`<span class="page-link"><a href="#">1</a></span>`);
                 $('.page-links-panel').append(`<span class="page-link">...</span>`);
-                for (let i = (data.number-7); i <= (data.number+8); i++) {
+                for (let i = (data.number - 7); i <= (data.number + 8); i++) {
                     if ((i - 1) == data.number) {
                         $('.page-links-panel').append(`<span class="page-link">[${i}]</span>`);
                     } else {
