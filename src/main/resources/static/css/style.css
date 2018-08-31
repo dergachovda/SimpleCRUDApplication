@@ -1,101 +1,67 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
 .wrapper {
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-
-    -webkit-flex-flow: row wrap;
-    flex-flow: row wrap;
-
-    font-weight: bold;
-    text-align: center;
+    min-height: 100vh;
+    flex-direction: column;
 }
-
-.wrapper > * {
-    padding: 10px;
-    flex: 1 80%;
-}
-
 
 .header {
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    padding: 10px 16px;
+    background: dimgray;
+    color: #f1f1f1;
 
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-
-    -webkit-flex-flow: nowrap;
-    justify-content: center;
-}
-
-.header-item {
-    margin: auto;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .table {
-    padding: 0;
-    margin: 0;
-    list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-
-    -webkit-flex-flow: nowrap;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.table-item {
-    margin: auto;
-
-    list-style: none;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: nowrap;
     justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1em;
 }
-.column {
-    margin: auto;
+
+.header-table {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
+
+.header-table div {
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid silver;
+}
+
 .id {
-    flex-grow:1;
+    width: 5%;
 }
 .firstName .lastName {
-    flex-grow:3;
+    width: 20%;
 }
 .birthDay .gender {
-    flex-grow:2;
+    width: 10%;
 }
+
+.action {
+    width: 10%;
+}
+
 .body-table {
-    padding: 0;
-    margin: 0;
-    list-style: none;
 
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-flow: nowrap;
-    justify-content: center;
-    flex-direction: column;
 }
-
 .item-user-wrap {
+    height: 30px;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -108,9 +74,12 @@
 
     -webkit-flex-flow: nowrap;
     justify-content: center;
+    align-items: flex-start;
 }
 
 .page-links-panel {
+    width: 100%;
+    background:  dimgray;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -126,17 +95,26 @@
 }
 
 .page-link {
-    background: tomato;
-    padding: 5px;
+    padding: 10px 16px;
+    color: yellow;
     width: 35px;
     height: 25px;
     margin-top: 10px;
 
     line-height: 20px;
-    color: yellow;
     font-weight: bold;
     font-size: 1em;
     text-align: center;
+}
+
+a:link {
+    color: white;
+}
+a:visited {
+    color: white;
+}
+a:hover {
+    color: white;
 }
 
 .item-user-wrap .edit,

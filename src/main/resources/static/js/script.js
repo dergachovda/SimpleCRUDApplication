@@ -102,7 +102,7 @@ $(document).ready(function() {
                 $('.page-links-panel').append(`<span class="page-link"><a href="#">${(data.totalPages)}</a></span>`);
             }
         }
-    }
+    };
 
     const getItemData = (activeSpan) => {
         const id = $(activeSpan).siblings(".item-user").children("input.id-user").val();
@@ -118,51 +118,27 @@ $(document).ready(function() {
             "birthDay": birthDay,
             "gender": gender
         };
-    }
+    };
 
     $('.page-links-panel').on('click', 'span.page-link', function() {
-        console.log("load page:" + ($(this).text() - 1));
-        load( ($(this).text() - 1) );
+        let pageLink = ($(this).text() - 1);
+        if (pageLink == null) {
+            return;
+        }
+        console.log("load page:" + pageLink);
+        load(pageLink);
     });
 
     function refreshInfo(data) {
         currentPage = data.number;
         totalPages = data.totalPages;
         sizePage = data.size;
-        $(".header").append(`<div class="header-item info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</div><div class="header-item info-data">Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button> <button type="button" id="prevPageButton">Prev page</button> <button type="button" id="nextPageButton">Next page</button></div>`);
-        if (currentPage > 0) {
-            $("#prevPageButton").show();
-        } else {
-            $("#prevPageButton").hide();
-        }
-        if (currentPage < (totalPages-1)) {
-            $("#nextPageButton").show();
-        } else {
-            $("#nextPageButton").hide();
-        }
+        $(".header").append(`<div class="header-item info-data">Total users: ${data.totalElements}, Current page: ${(currentPage+1)}, Total Pages: ${totalPages}</div><div class="header-item info-data">Size <input type="text" value="${sizePage}" class="size"> <button type="button" id="applyButton">Apply</button></div>`);
     }
 
     //change page size
     $(".header").on('click', '#applyButton', function () {
         sizePage =  $('.size').val();
-        load(currentPage);
-    });
-
-    //next page
-    $(".header").on('click', '#nextPageButton', function () {
-        currentPage++;
-        if (currentPage > (totalPages-1)) {
-            currentPage--;
-        }
-        load(currentPage);
-    });
-
-    //prev page
-    $(".header").on('click', '#prevPageButton', function () {
-        currentPage--;
-        if (currentPage < 0) {
-            currentPage++;
-        }
         load(currentPage);
     });
 
