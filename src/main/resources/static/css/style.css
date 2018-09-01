@@ -4,7 +4,7 @@
 }
 
 .wrapper {
-    height: 100%;
+    /*height: 100%;*/
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -12,22 +12,23 @@
 }
 
 .header {
-    padding: 10px 16px;
+    width: 100%;
+    padding: 10px;
     background: dimgray;
     color: white;
 
     display: flex;
     justify-content: center;
-    align-items: center;
+    /*align-items: center;*/
     flex-wrap: wrap;
 }
 
-.header div {
-    margin: 1px 1px 1px 1px;
+.info, .add-user {
+    padding: 5px;
 }
 
 .add-user {
-    min-width: 45%;
+    /*min-width: 45%;*/
     flex: 1;
     order: 2;
 
@@ -46,12 +47,15 @@
     order: 1;
 }
 
-.info-data {
-    min-width: 100%;
+.info {
+    min-width: 200px;
     flex: 1;
     order: 1;
 }
 
+input.size {
+    width: 3em;
+}
 
 .table {
     background: cornsilk;
@@ -83,30 +87,51 @@
     box-sizing: border-box;
     margin: 0;
 }
+.add-user {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+.add-user input, select {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.id, .firstName, .lastName, .birthDay, .gender, .action {
+    border: 1px solid dimgray;
+    padding: 1px;
+}
 
 .id {
-    border: 1px solid silver;
-    padding: 1px;
     flex-basis: 5%;
     min-width: 25px;
 }
 .firstName, .lastName {
-    border: 1px solid silver;
-    padding: 1px;
     flex-basis: 25%;
-    min-width: 125px;
+    min-width: 180px;
 }
 .birthDay {
-    border: 1px solid silver;
-    padding: 1px;
-    flex-basis: 15%;
+    flex-basis: 20%;
     min-width: 150px;
 }
 .gender, .action {
-    border: 1px solid silver;
-    padding: 1px;
     flex-basis: 10%;
     min-width: 90px;
+}
+
+input.id {
+    width: 30px;
+}
+input.firstName, input.lastName {
+    width: 200px;
+}
+input.birthDay {
+    width: 130px;
+}
+input.gender {
+    width: 50px;
 }
 
 .page-links-panel {
@@ -211,23 +236,4 @@ a:link, a:visited, a:hover {
 .loader img {
     width: 130px;
     height: auto;
-}
-
-.add-user-data {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-input.id {
-    width: 30px;
-}
-input.firstName, input.lastName {
-    width: 200px;
-}
-input.birthDay {
-    width: 130px;
-}
-input.gender {
-    width: 50px;
 }
