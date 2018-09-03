@@ -46,6 +46,9 @@
 }
 .add-user-button {
     order: 2;
+    width:50%;
+    border-radius: 5px;
+    font-weight: bold;
 }
 .add-user-data{
     order: 1;
@@ -94,7 +97,7 @@ input.size {
 .add-user {
     display: flex;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; 
 }
 .add-user input, select {
     width: 100%;
@@ -103,9 +106,10 @@ input.size {
     margin: 0;
 }
 
-.id, .firstName, .lastName, .birthDay, .gender, .action {
+.id, .firstName, .lastName, .birthDay, .gender, .action, .add-user-button {
     border: 1px solid dimgray;
     padding: 1px;
+    height: 100%;
 }
 
 .id {
