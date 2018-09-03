@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 let url = debug ? 'http://localhost:8086' : '';
 
 let currentPage = 0;
@@ -16,7 +16,7 @@ $(document).ready(function () {
         }
         $.ajax({
             beforeSend: function () {
-                $('body').append('<div class="loader"><img src="../static/img/loading.gif"></div>');
+                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
             },
             url: getUsersUrl,
             dataType: 'json',
@@ -80,20 +80,6 @@ $(document).ready(function () {
         };
     };
 
-    const getNewUserData = () => {
-        const firstName = $(".add-user-data").children('.firstName').children('input').val();
-        const lastName = $(".add-user-data").children('.lastName').children('input').val();
-        let birthDay = $(".add-user-data").children('.birthDay').children('input').val();
-        // birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
-        const gender = $(".add-user-data").children('.gender').find("#genderSelect option:selected").val();
-        return {
-            "firstName": firstName,
-            "lastName": lastName,
-            "birthDay": birthDay,
-            "gender": gender
-        };
-    };
-
     $('.page-links-panel').on('click', 'span.page-link', function () {
         let pageLink = ($(this).text() - 1);
         if (pageLink == null) {
@@ -104,28 +90,40 @@ $(document).ready(function () {
     });
 
     const renderAddUserData = () => {
-        $(".add-user-data").remove();
+        $('.add-user').children('.firstName').remove();
+        $(".add-user").children('.lastName').remove();
+        $(".add-user").children('.birthDay').remove();
+        $(".add-user").children('.gender').remove();
         $(".add-user").append(
-            '<div class="add-user-data">' +
-            '<div class="firstName">First name:<input type="text" value=""></div>' +
-            '<div class="lastName">Last name:<input type="text" value=""></div>' +
+            '<div class="firstName"><input type="text" value="" placeholder="First name"></div>' +
+            '<div class="lastName"><input type="text" value="" placeholder="Last name"></div>' +
             '<div class="birthDay"><input type="date" class="birthDay"></div>' +
-            '<div class="gender">' + getGenderSelect() + '</div>' +
-            '</div>'
+            '<div class="gender">' + getGenderSelect() + '</div>'
         );
     };
 
+    const getNewUserData = () => {
+        const firstName = $('.add-user').children('.firstName').children('input').val();
+        const lastName = $(".add-user").children('.lastName').children('input').val();
+        let birthDay = $(".add-user").children('.birthDay').children('input').val();
+        // birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
+        const gender = $(".add-user").children('.gender').find("#genderSelect option:selected").val();
+        return {
+            "firstName": firstName,
+            "lastName": lastName,
+            "birthDay": birthDay,
+            "gender": gender
+        };
+    };
+
     function renderInfo(data) {
-        $(".info-data").remove();
+        $(".info").remove();
         currentPage = data.number;
         totalPages = data.totalPages;
         sizePage = data.size;
         $(".header").append(
-            '<div class="info-data">' +
-            `Total users: ${data.totalElements}, Current page: ${(currentPage + 1)}, Total Pages: ${totalPages}` +
-            '</div>' +
-            '<div class="info-data">' +
-            `Size <input type="text" value="${sizePage}" class="size">` +
+            '<div class="info">' +
+            `Show <input type="text" value="${sizePage}" class="size"> of ${data.totalElements} ` +
             '<button type="button" id="applyButton">Apply</button>' +
             '</div>'
         );
