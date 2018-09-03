@@ -7,9 +7,8 @@ let sizePage = -1;
 let users;
 
 $(document).ready(function () {
-    load(currentPage);
 
-    function load(page) {
+    const load = (page) => {
         let getUsersUrl = `${url}/users?page=${page}`;
         if (sizePage !== -1) {
             getUsersUrl = `${getUsersUrl}&size=${sizePage}`;
@@ -39,7 +38,9 @@ $(document).ready(function () {
                 $('.loader').remove();
             }
         });
-    }
+    };
+
+    load(currentPage);
 
     const renderTableRow = (item) =>
         $(".table").append(
@@ -90,11 +91,11 @@ $(document).ready(function () {
     });
 
     const renderAddUserData = () => {
-        $('.add-user').children('.firstName').remove();
-        $(".add-user").children('.lastName').remove();
-        $(".add-user").children('.birthDay').remove();
-        $(".add-user").children('.gender').remove();
-        $(".add-user").append(
+        $('.addUser').children('.firstName').remove();
+        $(".addUser").children('.lastName').remove();
+        $(".addUser").children('.birthDay').remove();
+        $(".addUser").children('.gender').remove();
+        $(".addUser").append(
             '<div class="firstName"><input type="text" value="" placeholder="First name"></div>' +
             '<div class="lastName"><input type="text" value="" placeholder="Last name"></div>' +
             '<div class="birthDay"><input type="date" class="birthDay"></div>' +
@@ -103,11 +104,11 @@ $(document).ready(function () {
     };
 
     const getNewUserData = () => {
-        const firstName = $('.add-user').children('.firstName').children('input').val();
-        const lastName = $(".add-user").children('.lastName').children('input').val();
-        let birthDay = $(".add-user").children('.birthDay').children('input').val();
+        const firstName = $('.addUser').children('.firstName').children('input').val();
+        const lastName = $(".addUser").children('.lastName').children('input').val();
+        let birthDay = $(".addUser").children('.birthDay').children('input').val();
         // birthDay = birthDay || $(activeSpan).siblings(".item-user").find("#birthDay").val();
-        const gender = $(".add-user").children('.gender').find("#genderSelect option:selected").val();
+        const gender = $(".addUser").children('.gender').find("#genderSelect option:selected").val();
         return {
             "firstName": firstName,
             "lastName": lastName,
