@@ -10,30 +10,30 @@
         href="https://fonts.googleapis.com/css?family=Roboto" >
 </head>
 <body>
-
+<div class="wrapper">
   <header class="header">
-    <div class="button-wrap">
-      <div class="add-user button">Add new user</div>
-      <div class="info"></div>
-    </div> 
-    <div class="header-table">
-      <div class="id">Id</div>
-      <div class="firstName">First Name</div>
-      <div class="lastName">Last Name</div>
-      <div class="birthDay">Birth Day</div>
-      <div class="gender">Gender</div>
+    <div class="add-user">
+        <div class="add-user-button">
+            <button type="button" id="addButton">Add user</button>
+        </div>
     </div>
   </header>
 
-  <div class="wrap-page">
-    <div class="table"></div>
+  <div class="table">
+    <div class="tableHeader">
+        <div class="id">Id</div>
+        <div class="firstName">First Name</div>
+        <div class="lastName">Last Name</div>
+        <div class="birthDay">Birth Day</div>
+        <div class="gender">Gender</div>
+        <div class="action">Action</div>
+    </div>
   </div>
 
-  <div class="page-links-panel"></div>
-
+  <footer class="page-links-panel"></footer>
+</div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="../static/js/script.js"></script>
-
 </body>
 
 </html>
