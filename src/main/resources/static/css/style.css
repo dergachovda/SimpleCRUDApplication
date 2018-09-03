@@ -1,6 +1,10 @@
+@import url(//fonts.googleapis.com/css?family=Oxygen);
+
 * {
     margin: 0;
     padding: 0;
+
+    font-family: 'Oxygen', monospace;
 }
 
 .wrapper {
