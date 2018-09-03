@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 let url = debug ? 'http://localhost:8086' : '';
 
 let currentPage = 0;
@@ -16,7 +16,7 @@ $(document).ready(function () {
         }
         $.ajax({
             beforeSend: function () {
-                $('body').append('<div class="loader"><img src="../static/img/loading.gif"></div>');
+                $('body').append('<div class="loader"><img src="../img/loading.gif"></div>');
             },
             url: getUsersUrl,
             dataType: 'json',
